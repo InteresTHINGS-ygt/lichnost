@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordic Country Personality Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Oxanium', sans-serif;
+            /* Background: Very dark aqua green/teal */
+            background-color: #0a2e2e;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1a3c3c; /* Slightly lighter teal for contrast */
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Header --- */
+        h1 {
+            /* Title color: Lime green */
+            color: #32CD32;
+            text-align: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0;
+        }
+
+        /* --- Question Styling --- */
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #0a2e2e;
+            padding-bottom: 20px;
+        }
+
+        .question-block p {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .options label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: center;
+            width: 80px;
+        }
+
+        .options input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #32CD32;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .options input[type="radio"]:checked {
+            background-color: #32CD32;
+            border-color: #32CD32;
+        }
+
+        /* --- Button --- */
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-family: 'Oxanium', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #0a2e2e;
+            background-color: #32CD32;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #submit-btn:hover {
+            background-color: #28a428;
+            box-shadow: 0 0 15px rgba(50, 205, 50, 0.5);
+        }
+
+        /* --- Results --- */
+        #results-container {
+            margin-top: 30px;
+        }
+        
+        #results-container h2 {
+            color: #32CD32;
+            text-align: center;
+        }
+
+        .result-item {
+            background-color: #0a2e2e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .result-item h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .result-bar-container {
+            width: 100%;
+            background-color: #1a3c3c;
+            border-radius: 25px;
+            height: 30px;
+            overflow: hidden;
+        }
+        
+        .result-bar {
+            height: 100%;
+            background-color: #32CD32;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            box-sizing: border-box;
+            font-weight: 700;
+            color: #0a2e2e;
+            font-size: 1rem;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .result-description {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Error message */
+        #error-message {
+            color: #ff6b6b;
+            text-align: center;
+            font-weight: 700;
+            display: none;
+            margin-top: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>What Nordic Country Are You?</h1>
+        
+        <form id="quiz-form">
+            <div id="quiz-questions">
+                </div>
+            <button type="submit" id="submit-btn">Calculate Results</button>
+            <p id="error-message">Please answer all 50 questions!</p>
+        </form>
+
+        <div id="results-container">
+            </div>
+    </div>
+
+    <script>
+        // --- 1. DEFINE QUESTIONS ---
+        // 50 questions: 10 for each country
+        const quizQuestions = [
+            // Norway (NOR) - Nature, Friluftsliv, Independence
+            { text: "I feel most at peace when I'm deep in nature, like in mountains or by a fjord.", country: 'norway' },
+            { text: "The idea of a solitary hike in a vast, quiet landscape is appealing.", country: 'norway' },
+            { text: "I believe in 'there's no such thing as bad weather, only bad clothing'.", country: 'norway' },
+            { text: "I'm pragmatic and believe in saving resources for the future.", country: 'norway' },
+            { text: "Seafood, especially salmon, is one of my favorite foods.", country: 'norway' },
+            { text: "I value personal space and independence highly.", country: 'norway' },
+            { text: "I'm fascinated by ancient history, like the age of Vikings.", country: 'norway' },
+            { text: "I prefer functional and comfortable outdoor gear over high fashion.", country: 'norway' },
+            { text: "A scenic road trip with dramatic views sounds like a perfect vacation.", country: 'norway' },
+            { text: "I am generally reserved but warm up to people once I know them.", country: 'norway' },
+
+            // Sweden (SWE) - Lagom, Fika, Innovation, Consensus
+            { text: "I believe in 'just enough' – moderation in all things is key.", country: 'sweden' },
+            { text: "Taking a dedicated break for coffee and a sweet treat (like 'fika') is essential for a good day.", country: 'sweden' },
+            { text: "I appreciate minimalist design that is both beautiful and functional (like IKEA).", country: 'sweden' },
+            { text: "I strongly believe in equality and social progress.", country: 'sweden' },
+            { text: "When in a group, I prefer to find a consensus that everyone can agree on.", country: 'sweden' },
+            { text: "I am polite, efficient, and tend to follow the rules.", country: 'sweden' },
+            { text: "I'm interested in technology and new innovations.", country: 'sweden' },
+            { text: "I enjoy a good pop song with a catchy melody.", country: 'sweden' },
+            { text: "I like assembling things and seeing how they fit together.", country: 'sweden' },
+            { text: "I value work-life balance and believe it's crucial for happiness.", country: 'sweden' },
+
+            // Denmark (DEN) - Hygge, Happiness, Community, Design
+            { text: "My perfect evening involves a blanket, a warm drink, and good company.", country: 'denmark' },
+            { text: "I believe that 'coziness' (hygge) is a fundamental part of a happy life.", country: 'denmark' },
+            { text: "I prioritize finding joy and contentment in everyday small moments.", country: 'denmark' },
+            { text: "I prefer biking over driving for short distances.", country: 'denmark' },
+            { text: "I'm known for being direct and honest, but in a friendly way.", country: 'denmark' },
+            { text: "I appreciate witty, slightly sarcastic humor.", country: 'denmark' },
+            { text: "I value community and trust my neighbors.", country: 'denmark' },
+            { text: "I enjoy pastries and baked goods.", country: 'denmark' },
+            { text: "I believe a well-designed, comfortable home is essential for well-being.", country: 'denmark' },
+            { text: "I am drawn to colorful and playful designs (like LEGO).", country: 'denmark' },
+
+            // Finland (FIN) - Sisu, Sauna, Honesty, Introversion
+            { text: "When I face a tough challenge, I just power through it without complaining.", country: 'finland' },
+            { text: "I am a very honest person, even if the truth is a bit blunt.", country: 'finland' },
+            { text: "I'm comfortable with long, quiet silences in a conversation.", country: 'finland' },
+            { text: "The idea of a hot sauna followed by a cold plunge is invigorating.", country: 'finland' },
+            { text: "I'm generally introverted and need my personal time to recharge.", country: 'finland' },
+            { text: "I feel a deep connection to forests and lakes.", country: 'finland' },
+            { text: "I have a bit of a quirky or 'weird' sense of humor.", country: 'finland' },
+            { text: "I'm drawn to heavier or more melancholic music.", country: 'finland' },
+            { text: "I'm modest and don't like to brag about my accomplishments.", country: 'finland' },
+            { text: "I value resilience and grit (sisu) above almost all other traits.", country: 'finland' },
+
+            // Iceland (ICE) - Creativity, Rugged Nature, Independence, Folklore
+            { text: "I'm drawn to wild, raw, and dramatic landscapes (volcanoes, glaciers).", country: 'iceland' },
+            { text: "I have a strong creative streak (in music, writing, or art).", country: 'iceland' },
+            { text: "I'm fiercely independent and self-reliant.", country: 'iceland' },
+            { text: "I'm intrigued by myths, legends, and folklore.", country: 'iceland' },
+            { text: "I believe in the power of a small, tight-knit community.", country: 'iceland' },
+            { text: "I'm not afraid of being a bit eccentric or different.", country: 'iceland' },
+            { text: "I love soaking in a natural hot spring.", country: 'iceland' },
+            { text: "I can handle extreme or unpredictable weather.", country: 'iceland' },
+            { text: "I value unique language and storytelling.", country: 'iceland' },
+            { text: "I'm a resilient person who can bounce back from challenges.", country: 'iceland' }
+        ];
+
+        // --- 2. DEFINE RESULT DESCRIPTIONS ---
+        const resultDescriptions = {
+            norway: "You embody **Friluftsliv** (free-air life). You are independent, pragmatic, and feel most at home in the great outdoors. You find peace in the grandeur of nature, whether it's a majestic mountain or a tranquil fjord. You're reserved but deeply connected to your surroundings.",
+            sweden: "You are all about **Lagom** – 'just the right amount'. You seek balance, moderation, and harmony in all things. You're innovative, consensus-driven, and appreciate functional design. A 'fika' (coffee and cake break) isn't just a treat; it's a way of life.",
+            denmark: "Your guiding principle is **Hygge** – a feeling of cozy contentment. You value community, happiness, and finding joy in the small, everyday moments. You're likely friendly, direct, and believe a comfortable, well-lit home is the key to well-being.",
+            finland: "You possess **Sisu** – a quiet, stoic determination and resilience. You are honest, perhaps a bit introverted, and value your personal space. You're comfortable with silence and feel a deep, restorative connection to forests and lakes. And you probably understand the true power of a sauna.",
+            iceland: "You are a force of nature – creative, independent, and resilient. Like the Icelandic landscape, you are defined by 'fire and ice.' You're drawn to wild, raw beauty, value storytelling, and aren't afraid to be eccentric. You thrive in a tight-knit community but walk your own unique path."
+        };
+
+        // --- 3. RENDER THE QUESTIONS ---
+        const questionsContainer = document.getElementById('quiz-questions');
+
+        function renderQuestions() {
+            let questionHTML = '';
+            // Shuffle questions so they aren't grouped by country
+            const shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
+            
+            // Re-map the shuffled questions to keep track of their original index for scoring
+            const questionMap = shuffledQuestions.map(q => quizQuestions.indexOf(q));
+
+            shuffledQuestions.forEach((question, index) => {
+                // Use the original index from the map for the radio button names
+                const originalIndex = questionMap[index];
+                
+                questionHTML += `
+                    <div class="question-block">
+                        <p>${index + 1}. ${question.text}</p>
+                        <div class="options">
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="1" required>
+                                Strongly<br>Disagree
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="2">
+                                Disagree
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="3">
+                                Neutral
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="4">
+                                Agree
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}"Value="5">
+                                Strongly<br>Agree
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            questionsContainer.innerHTML = questionHTML;
+        }
+
+        // --- 4. HANDLE FORM SUBMISSION ---
+        const quizForm = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const errorMessage = document.getElementById('error-message');
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Stop the form from submitting normally
+            
+            // Check if all questions are answered
+            const totalAnswered = document.querySelectorAll('input[type="radio"]:checked').length;
+            if (totalAnswered < 50) {
+                errorMessage.style.display = 'block';
+                return;
+            }
+            errorMessage.style.display = 'none';
+
+            // Calculate results
+            calculateResults();
+        });
+
+        // --- 5. CALCULATE & DISPLAY RESULTS ---
+        function calculateResults() {
+            const scores = {
+                norway: 0,
+                sweden: 0,
+                denmark: 0,
+                finland: 0,
+                iceland: 0
+            };
+
+            const formData = new FormData(quizForm);
+
+            // Loop through all 50 questions
+            for (let i = 0; i < quizQuestions.length; i++) {
+                const country = quizQuestions[i].country;
+                const value = parseInt(formData.get(`q${i}`));
+                
+                if (!isNaN(value)) {
+                    scores[country] += value;
+                }
+            }
+
+            // Calculate percentages (Max score per country is 10 questions * 5 points = 50)
+            const maxScore = 50;
+            const percentages = [
+                { name: "Norway",  percent: Math.round((scores.norway / maxScore) * 100),  desc: resultDescriptions.norway },
+                { name: "Sweden",  percent: Math.round((scores.sweden / maxScore) * 100),  desc: resultDescriptions.sweden },
+                { name: "Denmark", percent: Math.round((scores.denmark / maxScore) * 100), desc: resultDescriptions.denmark },
+                { name: "Finland", percent: Math.round((scores.finland / maxScore) * 100), desc: resultDescriptions.finland },
+                { name: "Iceland", percent: Math.round((scores.iceland / maxScore) * 100), desc: resultDescriptions.iceland }
+            ];
+
+            // Sort results from highest to lowest
+            percentages.sort((a, b) => b.percent - a.percent);
+
+            // Display results
+            displayResults(percentages);
+        }
+
+        function displayResults(percentages) {
+            let resultsHTML = '<h2>Your Results</h2>';
+            
+            percentages.forEach(result => {
+                resultsHTML += `
+                    <div class="result-item">
+                        <h3>${result.name}</h3>
+                        <div class="result-bar-container">
+                            <div class="result-bar" style="width: ${result.percent}%;" data-percent="${result.percent}%">
+                                ${result.percent}%
+                            </div>
+                        </div>
+                        <p class="result-description">${result.desc}</p>
+                    </div>
+                `;
+            });
+
+            resultsContainer.innerHTML = resultsHTML;
+
+            // Animate the result bars
+            // We use a timeout to ensure the elements are in the DOM before animation
+            setTimeout(() => {
+                const bars = document.querySelectorAll('.result-bar');
+                bars.forEach(bar => {
+                    const width = bar.getAttribute('data-percent');
+                    bar.style.width = width;
+                });
+            }, 100);
+
+
+            // Hide the quiz form and button
+            quizForm.style.display = 'none';
+
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 6. INITIALIZE THE QUIZ ---
+        renderQuestions();
+
+    </script>
+</body>
+</html>

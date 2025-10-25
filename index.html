@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Test Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Oxanium', sans-serif;
+            /* Background: Very dark aqua green/teal */
+            background-color: #0a2e2e;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .hub-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1a3c3c; /* Slightly lighter teal for contrast */
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Header --- */
+        h1 {
+            color: #E6E6E6; /* 90% gray (from Apple test) */
+            text-align: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+        
+        /* --- Link Styling --- */
+        .test-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .test-link {
+            display: block;
+            padding: 20px;
+            background-color: #0a2e2e; /* Darker background */
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* --- Individual Link Colors --- */
+        
+        /* Nordic Test Link: Lime Green */
+        #link-nordic {
+            color: #32CD32;
+            border: 2px solid #32CD32;
+        }
+        #link-nordic:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(50, 205, 50, 0.5);
+        }
+
+        /* Robust Test Link: Yellow */
+        #link-robust {
+            color: #FFFF00;
+            border: 2px solid #FFFF00;
+        }
+        #link-robust:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+        }
+        
+        /* Apple Test Link: 90% Gray */
+        #link-apple {
+            color: #E6E6E6;
+            border: 2px solid #E6E6E6;
+        }
+        #link-apple:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(230, 230, 230, 0.5);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="hub-container">
+        <h1>AI Personality Test Hub</h1>
+        
+        <div class="test-links">
+            <a href="./nordic.html" class="test-link" id="link-nordic">
+                What Nordic Country Are You?
+            </a>
+            
+            <a href="./robust v2.html" class="test-link" id="link-robust">
+                What Robust Member Are You? (v2)
+            </a>
+            
+            <a href="./apple.html" class="test-link" id="link-apple">
+                What Apple Device Are You?
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What GTA V Character Are You?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Base Styles --- */
+        body {
+            font-family: 'Oxanium', sans-serif;
+            background-color: #0a2e2e; /* Dark aqua green/teal */
+            color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1a3c3c; /* Slightly lighter teal for contrast */
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Header --- */
+        h1 {
+            color: #FFA500; /* Title color: Orange */
+            text-align: center;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 0;
+        }
+
+        /* --- Question Styling --- */
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #0a2e2e;
+            padding-bottom: 20px;
+        }
+
+        .question-block p {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .options label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: center;
+            width: 80px;
+        }
+
+        .options input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #FFA500; /* Orange border for radio buttons */
+            border-radius: 50%;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .options input[type="radio"]:checked {
+            background-color: #FFA500; /* Orange fill when checked */
+            border-color: #FFA500;
+        }
+
+        /* --- Button --- */
+        #submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-family: 'Oxanium', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #0a2e2e; /* Dark teal text for contrast */
+            background-color: #FFA500; /* Orange button */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #submit-btn:hover {
+            background-color: #CC8400; /* Darker orange on hover */
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.5);
+        }
+
+        /* --- Results --- */
+        #results-container {
+            margin-top: 30px;
+        }
+        
+        #results-container h2 {
+            color: #FFA500;
+            text-align: center;
+        }
+
+        .result-item {
+            background-color: #0a2e2e;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .result-item h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .result-bar-container {
+            width: 100%;
+            background-color: #1a3c3c;
+            border-radius: 25px;
+            height: 30px;
+            overflow: hidden;
+        }
+        
+        .result-bar {
+            height: 100%;
+            background-color: #FFA500; /* Orange result bar */
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            box-sizing: border-box;
+            font-weight: 700;
+            color: #0a2e2e; /* Dark teal text for percentage */
+            font-size: 1rem;
+            transition: width 0.5s ease-in-out;
+        }
+        
+        .result-description {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Error message */
+        #error-message {
+            color: #ff6b6b;
+            text-align: center;
+            font-weight: 700;
+            display: none;
+            margin-top: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>What GTA V Character Are You?</h1>
+        
+        <form id="quiz-form">
+            <div id="quiz-questions">
+                </div>
+            <button type="submit" id="submit-btn">Calculate Results</button>
+            <p id="error-message">Please answer all 30 questions!</p>
+        </form>
+
+        <div id="results-container">
+            </div>
+    </div>
+
+    <script>
+        // --- 1. DEFINE QUESTIONS ---
+        // 30 questions (10 for each character)
+        const quizQuestions = [
+            // Michael (10 questions) - Family, Wealth, Therapy, Control, Mid-life crisis
+            { text: "I often feel conflicted between my past actions and my desire for a normal life.", character: 'michael' },
+            { text: "I believe that money can solve most of life's problems.", character: 'michael' },
+            { text: "I sometimes struggle with family drama and dysfunctional relationships.", character: 'michael' },
+            { text: "I have a temper, but I try to keep it under control.", character: 'michael' },
+            { text: "I've considered or am open to therapy to deal with my issues.", character: 'michael' },
+            { text: "I enjoy a bit of luxury and the comforts that wealth can provide.", character: 'michael' },
+            { text: "I have a tendency to be nostalgic about 'the good old days'.", character: 'michael' },
+            { text: "I like to be in control of situations and my own destiny.", character: 'michael' },
+            { text: "I'm willing to break rules if it means protecting what's mine.", character: 'michael' },
+            { text: "I often feel like I'm stuck in a rut and need a change.", character: 'michael' },
+
+            // Franklin (10 questions) - Ambition, Loyalty, Street smarts, Betterment
+            { text: "I am ambitious and always looking for opportunities to improve my life.", character: 'franklin' },
+            { text: "Loyalty to my friends and mentors is extremely important to me.", character: 'franklin' },
+            { text: "I pride myself on my street smarts and ability to adapt to tough situations.", character: 'franklin' },
+            { text: "I'm good at driving and enjoy being behind the wheel.", character: 'franklin' },
+            { text: "I often find myself mediating between two strong personalities.", character: 'franklin' },
+            { text: "I'm willing to learn from those more experienced than me, even if they're flawed.", character: 'franklin' },
+            { text: "I want to escape my current circumstances and achieve greater things.", character: 'franklin' },
+            { text: "I value respect and want to earn it through my actions.", character: 'franklin' },
+            { text: "I can be pragmatic and make tough decisions for my long-term benefit.", character: 'franklin' },
+            { text: "I try to keep a cool head, even when things get chaotic.", character: 'franklin' },
+
+            // Trevor (10 questions) - Chaos, Freedom, Unpredictability, Loyalty (to specific people)
+            { text: "I thrive on chaos and unpredictability.", character: 'trevor' },
+            { text: "I value my freedom above almost everything else.", character: 'trevor' },
+            { text: "My emotions can be intense and sometimes explosive.", character: 'trevor' },
+            { text: "I don't care much for societal norms or expectations.", character: 'trevor' },
+            { text: "I have a small circle of people I'm fiercely loyal to.", character: 'trevor' },
+            { text: "I can be extremely resourceful and adaptable in extreme situations.", character: 'trevor' },
+            { text: "I have a dark sense of humor that not everyone understands.", character: 'trevor' },
+            { text: "I am not afraid to resort to extreme measures to get what I want.", character: 'trevor' },
+            { text: "I often feel misunderstood or outcast by others.", character: 'trevor' },
+            { text: "I live life on my own terms, no matter the consequences.", character: 'trevor' }
+        ];
+
+        // --- 2. DEFINE RESULT DESCRIPTIONS ---
+        const resultDescriptions = {
+            michael: "You are **Michael De Santa**! You're a complex character, often caught between your past and a longing for stability. You value family (even if it's complicated) and the comforts that success brings. You can be prone to emotional outbursts but seek control and often find yourself reflecting on your choices. You're a leader, but one who sometimes needs to be led to a shrink!",
+            franklin: "You are **Franklin Clinton**! Ambitious and loyal, you're the street-smart go-getter always looking to elevate your status. You're pragmatic, adaptable, and a natural mediator, trying to make the best of tough situations. You learn from experience and strive for respect, navigating the chaos around you with a relatively cool head and a strong desire for betterment.",
+            trevor: "You are **Trevor Philips**! You embody raw freedom, chaos, and unpredictable intensity. Societal norms mean nothing to you; you live entirely on your own terms. While your methods can be extreme and your temper explosive, you possess a fierce loyalty to those you consider your own. You're resourceful, resilient, and probably have a dark sense of humor that keeps everyone on edge."
+        };
+
+        // --- 3. RENDER THE QUESTIONS ---
+        const questionsContainer = document.getElementById('quiz-questions');
+
+        function renderQuestions() {
+            let questionHTML = '';
+            // Shuffle questions so they aren't grouped by character
+            const shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
+            
+            // Re-map the shuffled questions to keep track of their original index for scoring
+            const questionMap = shuffledQuestions.map(q => quizQuestions.indexOf(q));
+
+            shuffledQuestions.forEach((question, index) => {
+                // Use the original index from the map for the radio button names
+                const originalIndex = questionMap[index];
+                
+                questionHTML += `
+                    <div class="question-block">
+                        <p>${index + 1}. ${question.text}</p>
+                        <div class="options">
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="1" required>
+                                Strongly<br>Disagree
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="2">
+                                Disagree
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="3">
+                                Neutral
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="4">
+                                Agree
+                            </label>
+                            <label>
+                                <input type="radio" name="q${originalIndex}" value="5">
+                                Strongly<br>Agree
+                            </label>
+                        </div>
+                    </div>
+                `;
+            });
+            questionsContainer.innerHTML = questionHTML;
+        }
+
+        // --- 4. HANDLE FORM SUBMISSION ---
+        const quizForm = document.getElementById('quiz-form');
+        const resultsContainer = document.getElementById('results-container');
+        const errorMessage = document.getElementById('error-message');
+
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Stop the form from submitting normally
+            
+            // Check if all questions are answered (30 questions)
+            const totalAnswered = document.querySelectorAll('input[type="radio"]:checked').length;
+            if (totalAnswered < 30) {
+                errorMessage.style.display = 'block';
+                return;
+            }
+            errorMessage.style.display = 'none';
+
+            // Calculate results
+            calculateResults();
+        });
+
+        // --- 5. CALCULATE & DISPLAY RESULTS ---
+        function calculateResults() {
+            const scores = {
+                michael: 0,
+                franklin: 0,
+                trevor: 0
+            };
+
+            const formData = new FormData(quizForm);
+
+            // Loop through all 30 questions
+            for (let i = 0; i < quizQuestions.length; i++) {
+                const character = quizQuestions[i].character;
+                const value = parseInt(formData.get(`q${i}`));
+                
+                if (!isNaN(value)) {
+                    scores[character] += value;
+                }
+            }
+
+            // Calculate percentages (Max score per character is 10 questions * 5 points = 50)
+            const maxScore = 50;
+            const percentages = [
+                { name: "Michael",  percent: Math.round((scores.michael / maxScore) * 100),  desc: resultDescriptions.michael },
+                { name: "Franklin", percent: Math.round((scores.franklin / maxScore) * 100), desc: resultDescriptions.franklin },
+                { name: "Trevor",   percent: Math.round((scores.trevor / maxScore) * 100),   desc: resultDescriptions.trevor }
+            ];
+
+            // Sort results from highest to lowest
+            percentages.sort((a, b) => b.percent - a.percent);
+
+            // Display results
+            displayResults(percentages);
+        }
+
+        function displayResults(percentages) {
+            let resultsHTML = '<h2>Your Results</h2>';
+            
+            percentages.forEach(result => {
+                resultsHTML += `
+                    <div class="result-item">
+                        <h3>${result.name}</h3>
+                        <div class="result-bar-container">
+                            <div class="result-bar" style="width: ${result.percent}%;" data-percent="${result.percent}%">
+                                ${result.percent}%
+                            </div>
+                        </div>
+                        <p class="result-description">${result.desc}</p>
+                    </div>
+                `;
+            });
+
+            resultsContainer.innerHTML = resultsHTML;
+
+            // Animate the result bars
+            setTimeout(() => {
+                const bars = document.querySelectorAll('.result-bar');
+                bars.forEach(bar => {
+                    const width = bar.getAttribute('data-percent');
+                    bar.style.width = width;
+                });
+            }, 100);
+
+            // Hide the quiz form and button
+            quizForm.style.display = 'none';
+
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 6. INITIALIZE THE QUIZ ---
+        renderQuestions();
+
+    </script>
+</body>
+</html>

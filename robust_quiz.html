@@ -279,23 +279,23 @@
                         <p>${index + 1}. ${question.text}</p>
                         <div class="options">
                             <label>
-                                <input type="radio" name="q${originalIndex}" value="1" required>
+                                <input type="radio" name="q${originalIndex}" value="0" required>
                                 Strongly<br>Disagree
                             </label>
                             <label>
-                                <input type="radio" name="q${originalIndex}" value="2">
+                                <input type="radio" name="q${originalIndex}" value="1">
                                 Disagree
                             </label>
                             <label>
-                                <input type="radio" name="q${originalIndex}" value="3">
+                                <input type="radio" name="q${originalIndex}" value="2">
                                 Neutral
                             </label>
                             <label>
-                                <input type="radio" name="q${originalIndex}" value="4">
+                                <input type="radio" name="q${originalIndex}" value="3">
                                 Agree
                             </label>
                             <label>
-                                <input type="radio" name="q${originalIndex}" value="5">
+                                <input type="radio" name="q${originalIndex}" value="4">
                                 Strongly<br>Agree
                             </label>
                         </div>
@@ -346,7 +346,7 @@
             }
 
             // Calculate percentages (Max score per character is 17 questions * 5 points = 85)
-            const maxScore = 85;
+            const maxScore = 68;
             const percentages = [
                 { name: "Slogo",      percent: Math.round((scores.slogo / maxScore) * 100),      desc: resultDescriptions.slogo },
                 { name: "Jelly",      percent: Math.round((scores.jelly / maxScore) * 100),      desc: resultDescriptions.jelly },
